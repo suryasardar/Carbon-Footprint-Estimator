@@ -10,7 +10,9 @@ export async function estimateFromImage(req: Request, res: Response, next: NextF
 
     const buf = req.file.buffer;
     const key = imgCacheKey(buf);
-    const cached = getCache(key);
+    console.log(buf);
+    const cached =await getCache(key);
+    console.log("cache hit for", key, cached);
     if (cached) return res.json(cached);
 
     const { dish, items: ingredients } = await inferFromImage(buf);

@@ -1,9 +1,9 @@
-import {lookupCarbon} from "../utils/normalize";
-
+import { lookupCarbon } from "../utils/normalize";
+import logger from "../utils/logger";
 
 export function computeFootprint(
   dish: string,
-  ingredients: { name: string; carbon_kg: number }[]
+  ingredients: { name: string }[] // Changed type to not expect carbon_kg from the input
 ) {
   try {
     if (!ingredients || ingredients.length === 0) {
@@ -12,23 +12,27 @@ export function computeFootprint(
 
     const breakdown = ingredients.map((item) => ({
       name: item.name,
-      carbon_kg: lookupCarbon(item.name), // Use the lookupCarbon function here
+      // Now, lookup the carbon_kg value here using your own data
+      carbon_kg: Number(lookupCarbon(item.name)),
     }));
 
-    const estimated_carbon_kg = Number(
-      breakdown.reduce((acc, x) => acc + x.carbon_kg, 0).toFixed(2)
-    );
+    const totalCarbon = breakdown.reduce((acc, x) => {
+      return acc + (Number(x.carbon_kg) || 0);
+    }, 0);
+
+    const estimated_carbon_kg = Number(totalCarbon.toFixed(2));
 
     return { dish, estimated_carbon_kg, ingredients: breakdown };
-  } catch (error) {
-    console.error(`Error computing footprint for ${dish}:`, error);
+  } catch (error:any) {
+    logger.error(`Error computing footprint for ${dish}:`, error);
     return {
       dish,
       estimated_carbon_kg: 0,
-      ingredients: ingredients?.map((item) => ({
-        name: item.name || "Unknown",
-        carbon_kg: 0,
-      })) || [],
+      ingredients:
+        ingredients?.map((item) => ({
+          name: item.name || "Unknown",
+          carbon_kg: 0,
+        })) || [],
     };
   }
 }

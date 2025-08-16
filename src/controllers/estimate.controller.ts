@@ -9,7 +9,8 @@ export async function estimateFromDish(req: Request, res: Response, next: NextFu
   try {
     const dish: string = req.body.dish;
     const key = `dish:${canonical(dish)}`;
-    const cached = getCache(key);
+    const cached = await getCache(key);
+    console.log(cached," cache hit for", key);
     if (cached) return res.json(cached);
 
     const ingredients = await inferIngredientsFromDish(dish);
