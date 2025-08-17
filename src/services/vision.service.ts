@@ -6,19 +6,28 @@ const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY || "");
 
 export async function inferFromImage(
   _buf: Buffer
-): Promise<{ dish?: string; items: { name: string }[] }> {
+): Promise<{ dish?: string; items: { name: string }[] } | { message: string }> {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const prompt = `
-Analyze this food image and return the dish name and a list of its main ingredients.
-Respond strictly in this JSON format:
+Analyze this image. If the image contains a food dish, return a JSON object with the dish name and a list of its main ingredients.
 
+If the image does NOT contain a food dish, return a plain JSON object with an empty message. This is the only response you should give for a non-food image.
+
+Respond strictly in one of these two JSON formats:
+
+Format 1 (if food is present):
 {
   "dish": "Dish Name",
   "items": [
     { "name": "Ingredient1" },
     { "name": "Ingredient2" }
   ]
+}
+
+Format 2 (if food is NOT present):
+{
+  "message": "The provided image does not contain food. Please upload an image of a food dish."
 }
 `;
 
@@ -46,12 +55,16 @@ Respond strictly in this JSON format:
     const jsonText = result.response.text();
 
     try {
-      // Attempt to parse the JSON. This is where the error is happening.
+      // Attempt to parse the JSON.
       const parsedResponse = JSON.parse(jsonText);
 
-      const dish =
-        parsedResponse.dish || parsedResponse.dishName || "Unknown Dish";
+      // Check for the specific "not food" response.
+      if (parsedResponse.message) {
+        return { message: parsedResponse.message };
+      }
 
+      // If the response indicates food, process it as before.
+      const dish = parsedResponse.dish || "Unknown Dish";
       let formattedItems: { name: string }[] = [];
 
       // Case 1: API returned `items: [{ name: ... }]`
@@ -60,8 +73,7 @@ Respond strictly in this JSON format:
           name: item.name,
         }));
       }
-
-      // Case 2: API returned `mainIngredients: ["Rice", "Chicken"]`
+      // Case 2: Handle a different key if the model sometimes returns it
       else if (Array.isArray(parsedResponse.mainIngredients)) {
         formattedItems = parsedResponse.mainIngredients.map(
           (ingredient: string) => ({
@@ -75,7 +87,7 @@ Respond strictly in this JSON format:
         items: formattedItems,
       };
     } catch (parseError) {
-      // This more specific catch block will tell you exactly what the response was.
+      // This catch block handles cases where the model response is not valid JSON.
       logger.error(
         `Failed to parse JSON from Gemini API. Additional details: ${JSON.stringify(
           {
@@ -85,17 +97,19 @@ Respond strictly in this JSON format:
         )}`
       );
 
-      // Returning a default response to prevent a 500 error
-      return { dish: undefined, items: [] };
+      // Return a default, user-friendly message for a parse error.
+      return { message: "Could not process the image. Please try again." };
     }
   } catch (error: any) {
-    // This outer catch block handles other API-related errors (e.g., network issues, API key problems)
+    // This outer catch block handles other API-related errors.
     logger.error(
       `An API error occurred: ${JSON.stringify({
         message: error.message,
         stack: error.stack,
       })}`
     );
-    throw new Error("Failed to process image inference. Please try again.");
+    return {
+      message: "Failed to process image inference due to an API error.",
+    };
   }
 }

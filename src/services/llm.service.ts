@@ -6,18 +6,25 @@ const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY || "");
 
 export async function inferIngredientsFromDish(
   dish: string
-): Promise<{ name: string }[]> { // Change return type to not include carbon_kg
+): Promise<{ name: string }[]> {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-  const prompt = `Analyze the dish "${dish}" and return a JSON array of its main ingredients. Respond only with the JSON.
+  const prompt = `
+Analyze the dish "${dish}".
+If it is a valid food dish, return a JSON array of its main ingredients.
+If it is NOT a valid food dish, return an empty JSON array [].
+Respond only with the JSON.
 
-  Example JSON format:
-  [
-    { "name": "rice" },
-    { "name": "chicken" }
-  ]
-  `;
-console.log("called");
+Example JSON format for a valid dish:
+[
+  { "name": "rice" },
+  { "name": "chicken" }
+]
+
+Example JSON format for an invalid dish:
+[]
+`;
+  console.log("called");
   try {
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],
@@ -27,7 +34,8 @@ console.log("called");
     });
 
     const text = result.response.text();
-    // The LLM now returns an array of objects with only a 'name' key
+
+    // The LLM now returns an array of objects with only a 'name' key, or an empty array.
     return JSON.parse(text);
   } catch (err:any) {
     logger.error("Error fetching ingredients from Gemini:", err);

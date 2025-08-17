@@ -12,7 +12,8 @@ export const Ingredient = z.object({
 export const EstimateResponse = z.object({
   dish: z.string(),
   estimated_carbon_kg: z.number().nonnegative(),
-  ingredients: z.array(Ingredient).min(1),
+  // Change the schema to allow the ingredients array to be empty.
+  ingredients: z.array(Ingredient),
 });
 
 export type EstimateRequest = z.infer<typeof EstimateRequest>;

@@ -7,8 +7,13 @@ export function computeFootprint(
 ) {
   try {
     if (!ingredients || ingredients.length === 0) {
-      throw new Error("No ingredients provided");
-    }
+    logger.info(`No ingredients found for dish '${dish}'. Returning 0 carbon footprint.`);
+    return {
+      dish,
+      estimated_carbon_kg: 0,
+      ingredients: [],
+    };
+  }
 
     const breakdown = ingredients.map((item) => ({
       name: item.name,
