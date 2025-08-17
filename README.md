@@ -99,6 +99,7 @@ This method runs all services (API and Redis) in isolated containers.
 B. Locally (Requires a local Redis instance)
 
 This method runs the API directly on your machine. Ensure a Redis instance is running on 127.0.0.1:6379 beforehand.
+
 npm run dev
 
 
@@ -110,7 +111,7 @@ The API will be available at http://localhost:3000.
 
 The API provides two main endpoints for carbon footprint estimation.
 
-1. Estimate Footprint from Image
+1. Estimate Footprint from Image   <-----------
    
 Calculates the footprint of a dish by analyzing an uploaded image.
 
@@ -157,7 +158,7 @@ Example Response (Error - Not a food image):
     "error": "The provided image does not contain food. Please upload an image of a food dish."
 }
 
-2. Estimate Footprint from Dish Name
+2. Estimate Footprint from Dish Name <--------
    
 Calculates the footprint of a dish from a name provided in the request body.
 
@@ -204,7 +205,12 @@ Example Response (Success):
 Example Response (Error - Dish not found):
 
 {
-    "error": "The provided dish was not recognized. Please provide a valid food dish."
+    {
+    "dish": "",
+    "estimated_carbon_kg": 0,
+    "ingredients": []
+}
+
 }
 
 💡 Key Design Decisions
