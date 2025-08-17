@@ -103,10 +103,19 @@ Content-Type: multipart/form-data
 
 Request: A file upload with the field name image.
 
-Example Request (using curl):
+Example Request (using Postman):
 
-curl --location 'http://localhost:3000/estimate/image' \
---form 'image=@"/path/to/your/image.jpg"'
+Set the request method to POST.
+
+Enter the URL: http://localhost:3000/estimate/image
+
+Navigate to the Body tab and select form-data.
+
+In the key-value editor, set the Key to image and select the type as File.
+
+Click Select File and choose your image file.
+
+Click Send.
 
 Example Response (Success):
 
@@ -132,26 +141,31 @@ Example Response (Error - Not a food image):
 }
 
 2. Estimate Footprint from Dish Name
-
+   
 Calculates the footprint of a dish from a name provided in the request body.
 
 Endpoint: POST /estimate
 
 Content-Type: application/json
 
-Request Body:
+Example Request (using Postman):
+
+Set the request method to POST.
+
+Enter the URL: http://localhost:3000/estimate
+
+Navigate to the Body tab and select raw.
+
+From the dropdown next to raw, choose JSON.
+
+Enter the following JSON object in the text editor:
 
 {
-  "dish": "spaghetti bolognese"
+  "dish": "Chicken Biryani"
 }
 
-Example Request (using curl):
 
-curl --location 'http://localhost:3000/estimate' \
---header 'Content-Type: application/json' \
---data '{
-    "dish": "spaghetti bolognese"
-}'
+Click Send.
 
 Example Response (Success):
 
@@ -185,6 +199,7 @@ Graceful Degradation: Instead of crashing, the code handles non-food images and 
 Predictable LLM Response: By explicitly instructing the LLM to return an empty array [] for unrecognized dishes, we make the API's behavior predictable and easier to handle in the downstream code.
 
 ⚠️ Limitations & Production Considerations
+
 Carbon Footprint Data: The current carbon data (lookupCarbon and getDishCarbonKg) is a placeholder and should be replaced with a robust, well-researched database for production.
 
 Scalability: The current implementation is single-threaded. For heavy traffic, consider a more scalable architecture with message queues for image processing and a load balancer.
