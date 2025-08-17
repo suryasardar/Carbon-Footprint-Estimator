@@ -47,21 +47,33 @@ Create a .env file in the root directory and add the following variables.
 For development with Docker Compose:
 
 PORT=3000
+
 RATE_LIMIT_PER_MINUTE=5
+
 MAX_UPLOAD_MB=5
+
 CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+
 GEMINI_API_KEY=<YOUR_GEMINI_API_KEY>
+
 REDIS_HOST=redis
+
 REDIS_PORT=6379
 
 For local development (without Docker Compose):
 
 PORT=3000
+
 RATE_LIMIT_PER_MINUTE=5
+
 MAX_UPLOAD_MB=5
+
 CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+
 GEMINI_API_KEY=<YOUR_GEMINI_API_KEY>
+
 REDIS_HOST=127.0.0.1
+
 REDIS_PORT=6379
 
 Note: The REDIS_HOST value is crucial. redis is used for inter-container communication, while 127.0.0.1 is for local machine access.
@@ -87,10 +99,10 @@ This method runs all services (API and Redis) in isolated containers.
 B. Locally (Requires a local Redis instance)
 
 This method runs the API directly on your machine. Ensure a Redis instance is running on 127.0.0.1:6379 beforehand.
+npm run dev
 
 
 # Start the API server
-npm run dev
 
 The API will be available at http://localhost:3000.
 
