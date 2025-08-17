@@ -74,16 +74,20 @@ npm install
 4. Running the Application
 There are two primary ways to run the application:
 
+
+
+# Build and start all services
+
+sudo docker compose -f docker-compose.dev.yml up --build
+
 A. With Docker Compose (Recommended)
 
 This method runs all services (API and Redis) in isolated containers.
 
-# Build and start all services
-sudo docker compose -f docker-compose.dev.yml up --build
-
 B. Locally (Requires a local Redis instance)
 
 This method runs the API directly on your machine. Ensure a Redis instance is running on 127.0.0.1:6379 beforehand.
+
 
 # Start the API server
 npm run dev
@@ -91,6 +95,7 @@ npm run dev
 The API will be available at http://localhost:3000.
 
 📝 API Endpoints
+
 The API provides two main endpoints for carbon footprint estimation.
 
 1. Estimate Footprint from Image
