@@ -45,6 +45,7 @@ cd foodprint-api
 Create a .env file in the root directory and add the following variables.
 
 For development with Docker Compose:
+
 PORT=3000
 RATE_LIMIT_PER_MINUTE=5
 MAX_UPLOAD_MB=5
@@ -54,6 +55,7 @@ REDIS_HOST=redis
 REDIS_PORT=6379
 
 For local development (without Docker Compose):
+
 PORT=3000
 RATE_LIMIT_PER_MINUTE=5
 MAX_UPLOAD_MB=5
@@ -92,6 +94,7 @@ The API will be available at http://localhost:3000.
 The API provides two main endpoints for carbon footprint estimation.
 
 1. Estimate Footprint from Image
+   
 Calculates the footprint of a dish by analyzing an uploaded image.
 
 Endpoint: POST /estimate/image
@@ -116,7 +119,7 @@ Example Response (Success):
             "carbon_kg": 2.0
         },
         {
-            "name": "curry",
+            "name": "Oil",
             "carbon_kg": 0.5
         }
     ]
@@ -129,6 +132,7 @@ Example Response (Error - Not a food image):
 }
 
 2. Estimate Footprint from Dish Name
+
 Calculates the footprint of a dish from a name provided in the request body.
 
 Endpoint: POST /estimate
@@ -152,15 +156,15 @@ curl --location 'http://localhost:3000/estimate' \
 Example Response (Success):
 
 {
-    "dish": "spaghetti bolognese",
+    "dish": "Chicken Biryani",
     "estimated_carbon_kg": 1.7,
     "ingredients": [
         {
-            "name": "spaghetti",
+            "name": "Chicken",
             "carbon_kg": 0.5
         },
         {
-            "name": "bolognese sauce",
+            "name": "Rice",
             "carbon_kg": 1.2
         }
     ]
