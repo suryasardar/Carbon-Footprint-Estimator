@@ -38,7 +38,7 @@ Docker & Docker Compose
 A Google Gemini API key.
 
 1. Clone the Repository
-git clone 
+git clone https://github.com/suryasardar/Carbon-Footprint-Estimator.git
 cd foodprint-api
 
 2. Environment Setup
@@ -102,7 +102,7 @@ Request: A file upload with the field name image.
 
 Example Request (using curl):
 
-curl --location 'http://localhost:3000/estimate' \
+curl --location 'http://localhost:3000/estimate/image' \
 --form 'image=@"/path/to/your/image.jpg"'
 
 Example Response (Success):
@@ -143,7 +143,7 @@ Request Body:
 
 Example Request (using curl):
 
-curl --location 'http://localhost:3000/estimate-by-name' \
+curl --location 'http://localhost:3000/estimate' \
 --header 'Content-Type: application/json' \
 --data '{
     "dish": "spaghetti bolognese"
@@ -175,11 +175,16 @@ Example Response (Error - Dish not found):
 💡 Key Design Decisions
 
 Loose Coupling: The infer and compute functions are separate, making the system modular. You can easily swap out the LLM (or even the data source) without changing the core footprint calculation logic.
+
 Graceful Degradation: Instead of crashing, the code handles non-food images and invalid dish names by returning a specific error message. This provides a better experience for the API consumer and prevents server failures.
+
 Predictable LLM Response: By explicitly instructing the LLM to return an empty array [] for unrecognized dishes, we make the API's behavior predictable and easier to handle in the downstream code.
 
 ⚠️ Limitations & Production Considerations
 Carbon Footprint Data: The current carbon data (lookupCarbon and getDishCarbonKg) is a placeholder and should be replaced with a robust, well-researched database for production.
+
 Scalability: The current implementation is single-threaded. For heavy traffic, consider a more scalable architecture with message queues for image processing and a load balancer.
+
 API Key Management: The Gemini API key is stored in a .env file. For a production environment, this should be managed using a secure secrets management system.
+
 LLM Performance & Costs: API calls to the LLM can be slow and costly. The Redis cache helps mitigate this, but further optimization or pre-computation may be necessary for high-volume use.
