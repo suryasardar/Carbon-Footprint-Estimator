@@ -24,7 +24,7 @@ Example JSON format for a valid dish:
 Example JSON format for an invalid dish:
 []
 `;
-  console.log("called");
+ 
   try {
     const result = await model.generateContent({
       contents: [{ role: "user", parts: [{ text: prompt }] }],

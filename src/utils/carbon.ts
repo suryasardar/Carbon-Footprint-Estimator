@@ -17,8 +17,11 @@ const carbonData = {
   lentil: 0.9,
   lamb: 39.2,
   beef: 99.4,
-
-  // New additions (approximations)
+  fish: 5.0,             // average for common fish
+  shrimp: 11.0,          // average for shrimp
+  pork: 12.1,            // average for pork
+  tofu: 2.0,             // average for tofu
+  cheese: 9.8,           // average for cheese
   carrots: 0.43,         // root vegetables ≈0.43 kg CO₂e/kg
   leeks: 0.50,           // similar to onions/leeks
   cabbage: 0.51,         // brassica category
